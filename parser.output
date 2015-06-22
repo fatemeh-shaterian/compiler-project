@@ -1,0 +1,3982 @@
+Terminals unused in grammar
+
+   EXPR
+
+
+State 24 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: program_start $end
+
+    1 $@1: %empty
+
+    2 program_start: $@1 program
+
+    3 program: program_parts
+    4        | program_parts program
+
+    5 program_parts: class_def_decleration
+    6              | func_proc
+    7              | var_dcl
+
+    8 class_def_decleration: CLASS ID SEMI_COLON
+    9                      | class_dcl
+
+   10 class_dcl: CLASS ID polymorphic_opt OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE SEMI_COLON
+   11          | CLASS ID OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE SEMI_COLON
+
+   12 polymorphic_opt: INHERITS COLON ID COMMA polymorphic_opt
+   13                | INHERITS COLON ID
+
+   14 class_body: %empty
+   15           | spec_on_class var_dcl class_body
+   16           | spec_on_class func_dcl class_body
+
+   17 spec_on_class: access_level
+   18              | access_level STATIC
+
+   19 func_proc: func_dcl
+   20          | proc_dcl
+
+   21 func_dcl: type ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS SEMI_COLON
+   22         | type ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS block
+
+   23 argument: type ID array_dcl
+   24         | type ID array_dcl COMMA argument
+
+   25 arguments: %empty
+   26          | argument
+
+   27 array_dcl: %empty
+   28          | OPENING_BRACE CLOSING_BRACE array_dcl
+
+   29 proc_dcl: PROCEDURE ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS SEMI_COLON
+   30         | PROCEDURE ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS block
+
+   31 access_level: PUBLIC
+   32             | PRIVATE
+
+   33 type: INT
+   34     | BOOL
+   35     | FLOAT
+   36     | LONG
+   37     | CHAR
+   38     | DOUBLE
+   39     | ID
+   40     | STRING
+   41     | VOID
+   42     | AUTO
+
+   43 $@2: %empty
+
+   44 var_dcl: CONST type $@2 var_dcl_cnts SEMI_COLON
+
+   45 $@3: %empty
+
+   46 var_dcl: type $@3 var_dcl_cnts SEMI_COLON
+
+   47 var_dcl_cnts: var_dcl_cnt
+   48             | var_dcl_cnt COMMA var_dcl_cnts
+
+   49 var_dcl_cnt: variable
+   50            | assignment
+
+   51 block: OPENING_CURLY_BRACE run_content CLOSING_CURLY_BRACE
+
+   52 run_content: %empty
+   53            | var_dcl run_content
+   54            | statement run_content
+
+   55 statement: assignment SEMI_COLON
+   56          | expr SEMI_COLON
+   57          | cond_stmt
+   58          | loop_stmt
+   59          | RETURN SEMI_COLON
+   60          | RETURN expr SEMI_COLON
+   61          | goto SEMI_COLON
+   62          | label
+   63          | BREAK SEMI_COLON
+   64          | CONTINUE SEMI_COLON
+   65          | DESTRUCT array_dcl ID SEMI_COLON
+   66          | SIZEOF OPENING_PARENTHESIS type CLOSING_PARENTHESIS SEMI_COLON
+
+   67 $@4: %empty
+
+   68 assignment: variable ASSIGNMENT $@4 expr
+
+   69 $@5: %empty
+
+   70 assignment: variable ASSIGNMENT $@5 NEW
+
+   71 method_call: ID OPENING_PARENTHESIS parameters CLOSING_PARENTHESIS
+   72            | ID OPENING_PARENTHESIS CLOSING_PARENTHESIS
+   73            | ID DOT method_call
+
+   74 parameters: variable
+   75           | variable COMMA parameters
+
+   76 cond_stmt: IF OPENING_PARENTHESIS expr closing_paranthes block
+
+   77 $@6: %empty
+
+   78 cond_stmt: IF OPENING_PARENTHESIS expr closing_paranthes block ELSE $@6 block
+   79          | SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE cases DEFAULT COLON block CLOSING_CURLY_BRACE
+
+   80 closing_paranthes: CLOSING_PARENTHESIS
+
+   81 cases: %empty
+   82      | CASE INTEGER_CONST COLON block cases
+
+   83 $@7: %empty
+
+   84 $@8: %empty
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS var_dcl $@7 expr $@8 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+   86 $@9: %empty
+
+   87 $@10: %empty
+
+   88 loop_stmt: FOR OPENING_PARENTHESIS $@9 SEMI_COLON expr $@10 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+   89 $@11: %empty
+
+   90 $@12: %empty
+
+   91 loop_stmt: REPEAT $@11 block UNTIL OPENING_PARENTHESIS expr $@12 CLOSING_PARENTHESIS SEMI_COLON
+   92          | FOREACH OPENING_PARENTHESIS ID IN ID CLOSING_PARENTHESIS block
+
+   93 expr_assign: expr
+
+   94 goto: GOTO ID
+
+   95 label: ID COLON
+
+   96 expr: expr ADD expr
+   97     | expr SUB_AND_UNARY_MINUS expr
+   98     | expr PRODUCTION expr
+   99     | expr DIV expr
+  100     | expr MOD expr
+  101     | expr LOGICAL_AND expr
+  102     | expr ARITHMATIC_AND expr
+  103     | expr ARITHMATIC_OR expr
+  104     | expr LOGICAL_OR expr
+  105     | expr LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr EQUAL expr
+  107     | expr NOT_EQUAL expr
+  108     | expr BIGGER_OR_EQUAL expr
+  109     | expr BIGGER_THAN expr
+  110     | expr LESS_OR_EQUAL expr
+  111     | expr LESS_THAN expr
+  112     | OPENING_PARENTHESIS expr CLOSING_PARENTHESIS
+  113     | unary_op variable
+  114     | variable unary_op
+  115     | variable
+  116     | method_call
+  117     | const_val
+  118     | NOT expr
+  119     | SUB_AND_UNARY_MINUS expr
+
+  120 unary_op: INCREMENT
+  121         | DECREMENT
+
+  122 variable: ID
+  123         | ID DOT variable
+  124         | ID array_use
+  125         | ID array_use DOT variable
+
+  126 array_use: OPENING_BRACE expr CLOSING_BRACE array_use
+  127          | OPENING_BRACE expr CLOSING_BRACE
+
+  128 const_val: INTEGER_CONST
+  129          | REAL_CONST
+  130          | CHARACTER_CONST
+  131          | BOOLEAN_CONST
+  132          | STRING_CONST
+  133          | LONG_CONST
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+EQUAL (258) 106
+NOT_EQUAL (259) 107
+LESS_OR_EQUAL (260) 110
+LESS_THAN (261) 111
+BIGGER_THAN (262) 109
+BIGGER_OR_EQUAL (263) 108
+ASSIGNMENT (264) 68 70
+NOT (265) 118
+ARITHMATIC_AND (266) 102
+LOGICAL_AND (267) 101
+ARITHMATIC_OR (268) 103
+LOGICAL_OR (269) 104
+LOGICAL_OR_ARITHMATIC_XOR (270) 105
+PRODUCTION (271) 98
+ADD (272) 96
+INCREMENT (273) 120
+DECREMENT (274) 121
+SUB_AND_UNARY_MINUS (275) 97 119
+DIV (276) 99
+MOD (277) 100
+OPENING_CURLY_BRACE (278) 10 11 51 79
+CLOSING_CURLY_BRACE (279) 10 11 51 79
+OPENING_PARENTHESIS (280) 21 22 29 30 66 71 72 76 78 79 85 88 91 92
+    112
+CLOSING_PARENTHESIS (281) 21 22 29 30 66 71 72 79 80 85 88 91 92 112
+DOT (282) 73 123 125
+COMMA (283) 12 24 48 75
+COLON (284) 12 13 79 82 95
+SEMI_COLON (285) 8 10 11 21 29 44 46 55 56 59 60 61 63 64 65 66 85
+    88 91
+OPENING_BRACE (286) 28 126 127
+CLOSING_BRACE (287) 28 126 127
+BOOLEAN_CONST (288) 131
+INTEGER_CONST (289) 82 128
+LONG_CONST (290) 133
+REAL_CONST (291) 129
+CHARACTER_CONST (292) 130
+STRING_CONST (293) 132
+ID (294) 8 10 11 12 13 21 22 23 24 29 30 39 65 71 72 73 79 92 94 95
+    122 123 124 125
+AUTO (295) 42
+BOOL (296) 34
+BREAK (297) 63
+CASE (298) 82
+CHAR (299) 37
+CLASS (300) 8 10 11
+CONST (301) 44
+CONTINUE (302) 64
+DEFAULT (303) 79
+DESTRUCT (304) 65
+DOUBLE (305) 38
+ELSE (306) 78
+FLOAT (307) 35
+FOR (308) 85 88
+FOREACH (309) 92
+GOTO (310) 94
+IF (311) 76 78
+IN (312) 92
+INT (313) 33
+LONG (314) 36
+NEW (315) 70
+PRIVATE (316) 32
+PROCEDURE (317) 29 30
+PUBLIC (318) 31
+REPEAT (319) 91
+RETURN (320) 59 60
+SIZEOF (321) 66
+STATIC (322) 18
+STRING (323) 40
+SWITCH (324) 79
+UNTIL (325) 91
+VOID (326) 41
+INHERITS (327) 12 13
+OF (328) 79
+EXPR (329)
+UNARY_MINUS (330)
+LOWER_THAN_ELSE (331)
+
+
+Nonterminals, with rules where they appear
+
+$accept (77)
+    on left: 0
+program_start (78)
+    on left: 2, on right: 0
+$@1 (79)
+    on left: 1, on right: 2
+program (80)
+    on left: 3 4, on right: 2 4
+program_parts (81)
+    on left: 5 6 7, on right: 3 4
+class_def_decleration (82)
+    on left: 8 9, on right: 5
+class_dcl (83)
+    on left: 10 11, on right: 9
+polymorphic_opt (84)
+    on left: 12 13, on right: 10 12
+class_body (85)
+    on left: 14 15 16, on right: 10 11 15 16
+spec_on_class (86)
+    on left: 17 18, on right: 15 16
+func_proc (87)
+    on left: 19 20, on right: 6
+func_dcl (88)
+    on left: 21 22, on right: 16 19
+argument (89)
+    on left: 23 24, on right: 24 26
+arguments (90)
+    on left: 25 26, on right: 21 22 29 30
+array_dcl (91)
+    on left: 27 28, on right: 23 24 28 65
+proc_dcl (92)
+    on left: 29 30, on right: 20
+access_level (93)
+    on left: 31 32, on right: 17 18
+type (94)
+    on left: 33 34 35 36 37 38 39 40 41 42, on right: 21 22 23 24 44
+    46 66
+var_dcl (95)
+    on left: 44 46, on right: 7 15 53 85
+$@2 (96)
+    on left: 43, on right: 44
+$@3 (97)
+    on left: 45, on right: 46
+var_dcl_cnts (98)
+    on left: 47 48, on right: 44 46 48
+var_dcl_cnt (99)
+    on left: 49 50, on right: 47 48
+block (100)
+    on left: 51, on right: 22 30 76 78 79 82 85 88 91 92
+run_content (101)
+    on left: 52 53 54, on right: 51 53 54
+statement (102)
+    on left: 55 56 57 58 59 60 61 62 63 64 65 66, on right: 54
+assignment (103)
+    on left: 68 70, on right: 50 55
+$@4 (104)
+    on left: 67, on right: 68
+$@5 (105)
+    on left: 69, on right: 70
+method_call (106)
+    on left: 71 72 73, on right: 73 116
+parameters (107)
+    on left: 74 75, on right: 71 75
+cond_stmt (108)
+    on left: 76 78 79, on right: 57
+$@6 (109)
+    on left: 77, on right: 78
+closing_paranthes (110)
+    on left: 80, on right: 76 78
+cases (111)
+    on left: 81 82, on right: 79 82
+loop_stmt (112)
+    on left: 85 88 91 92, on right: 58
+$@7 (113)
+    on left: 83, on right: 85
+$@8 (114)
+    on left: 84, on right: 85
+$@9 (115)
+    on left: 86, on right: 88
+$@10 (116)
+    on left: 87, on right: 88
+$@11 (117)
+    on left: 89, on right: 91
+$@12 (118)
+    on left: 90, on right: 91
+expr_assign (119)
+    on left: 93, on right: 85 88
+goto (120)
+    on left: 94, on right: 61
+label (121)
+    on left: 95, on right: 62
+expr (122)
+    on left: 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110
+    111 112 113 114 115 116 117 118 119, on right: 56 60 68 76 78 85
+    88 91 93 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110
+    111 112 118 119 126 127
+unary_op (123)
+    on left: 120 121, on right: 113 114
+variable (124)
+    on left: 122 123 124 125, on right: 49 68 70 74 75 113 114 115
+    123 125
+array_use (125)
+    on left: 126 127, on right: 124 125 126
+const_val (126)
+    on left: 128 129 130 131 132 133, on right: 117
+
+
+State 0
+
+    0 $accept: . program_start $end
+
+    $default  reduce using rule 1 ($@1)
+
+    program_start  go to state 1
+    $@1            go to state 2
+
+
+State 1
+
+    0 $accept: program_start . $end
+
+    $end  shift, and go to state 3
+
+
+State 2
+
+    2 program_start: $@1 . program
+
+    ID         shift, and go to state 4
+    AUTO       shift, and go to state 5
+    BOOL       shift, and go to state 6
+    CHAR       shift, and go to state 7
+    CLASS      shift, and go to state 8
+    CONST      shift, and go to state 9
+    DOUBLE     shift, and go to state 10
+    FLOAT      shift, and go to state 11
+    INT        shift, and go to state 12
+    LONG       shift, and go to state 13
+    PROCEDURE  shift, and go to state 14
+    STRING     shift, and go to state 15
+    VOID       shift, and go to state 16
+
+    program                go to state 17
+    program_parts          go to state 18
+    class_def_decleration  go to state 19
+    class_dcl              go to state 20
+    func_proc              go to state 21
+    func_dcl               go to state 22
+    proc_dcl               go to state 23
+    type                   go to state 24
+    var_dcl                go to state 25
+
+
+State 3
+
+    0 $accept: program_start $end .
+
+    $default  accept
+
+
+State 4
+
+   39 type: ID .
+
+    $default  reduce using rule 39 (type)
+
+
+State 5
+
+   42 type: AUTO .
+
+    $default  reduce using rule 42 (type)
+
+
+State 6
+
+   34 type: BOOL .
+
+    $default  reduce using rule 34 (type)
+
+
+State 7
+
+   37 type: CHAR .
+
+    $default  reduce using rule 37 (type)
+
+
+State 8
+
+    8 class_def_decleration: CLASS . ID SEMI_COLON
+   10 class_dcl: CLASS . ID polymorphic_opt OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE SEMI_COLON
+   11          | CLASS . ID OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE SEMI_COLON
+
+    ID  shift, and go to state 26
+
+
+State 9
+
+   44 var_dcl: CONST . type $@2 var_dcl_cnts SEMI_COLON
+
+    ID      shift, and go to state 4
+    AUTO    shift, and go to state 5
+    BOOL    shift, and go to state 6
+    CHAR    shift, and go to state 7
+    DOUBLE  shift, and go to state 10
+    FLOAT   shift, and go to state 11
+    INT     shift, and go to state 12
+    LONG    shift, and go to state 13
+    STRING  shift, and go to state 15
+    VOID    shift, and go to state 16
+
+    type  go to state 27
+
+
+State 10
+
+   38 type: DOUBLE .
+
+    $default  reduce using rule 38 (type)
+
+
+State 11
+
+   35 type: FLOAT .
+
+    $default  reduce using rule 35 (type)
+
+
+State 12
+
+   33 type: INT .
+
+    $default  reduce using rule 33 (type)
+
+
+State 13
+
+   36 type: LONG .
+
+    $default  reduce using rule 36 (type)
+
+
+State 14
+
+   29 proc_dcl: PROCEDURE . ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS SEMI_COLON
+   30         | PROCEDURE . ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS block
+
+    ID  shift, and go to state 28
+
+
+State 15
+
+   40 type: STRING .
+
+    $default  reduce using rule 40 (type)
+
+
+State 16
+
+   41 type: VOID .
+
+    $default  reduce using rule 41 (type)
+
+
+State 17
+
+    2 program_start: $@1 program .
+
+    $default  reduce using rule 2 (program_start)
+
+
+State 18
+
+    3 program: program_parts .
+    4        | program_parts . program
+
+    ID         shift, and go to state 4
+    AUTO       shift, and go to state 5
+    BOOL       shift, and go to state 6
+    CHAR       shift, and go to state 7
+    CLASS      shift, and go to state 8
+    CONST      shift, and go to state 9
+    DOUBLE     shift, and go to state 10
+    FLOAT      shift, and go to state 11
+    INT        shift, and go to state 12
+    LONG       shift, and go to state 13
+    PROCEDURE  shift, and go to state 14
+    STRING     shift, and go to state 15
+    VOID       shift, and go to state 16
+
+    $default  reduce using rule 3 (program)
+
+    program                go to state 29
+    program_parts          go to state 18
+    class_def_decleration  go to state 19
+    class_dcl              go to state 20
+    func_proc              go to state 21
+    func_dcl               go to state 22
+    proc_dcl               go to state 23
+    type                   go to state 24
+    var_dcl                go to state 25
+
+
+State 19
+
+    5 program_parts: class_def_decleration .
+
+    $default  reduce using rule 5 (program_parts)
+
+
+State 20
+
+    9 class_def_decleration: class_dcl .
+
+    $default  reduce using rule 9 (class_def_decleration)
+
+
+State 21
+
+    6 program_parts: func_proc .
+
+    $default  reduce using rule 6 (program_parts)
+
+
+State 22
+
+   19 func_proc: func_dcl .
+
+    $default  reduce using rule 19 (func_proc)
+
+
+State 23
+
+   20 func_proc: proc_dcl .
+
+    $default  reduce using rule 20 (func_proc)
+
+
+State 24
+
+   21 func_dcl: type . ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS SEMI_COLON
+   22         | type . ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS block
+   46 var_dcl: type . $@3 var_dcl_cnts SEMI_COLON
+
+    ID  shift, and go to state 30
+
+    ID  [reduce using rule 45 ($@3)]
+
+    $@3  go to state 31
+
+
+State 25
+
+    7 program_parts: var_dcl .
+
+    $default  reduce using rule 7 (program_parts)
+
+
+State 26
+
+    8 class_def_decleration: CLASS ID . SEMI_COLON
+   10 class_dcl: CLASS ID . polymorphic_opt OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE SEMI_COLON
+   11          | CLASS ID . OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE SEMI_COLON
+
+    OPENING_CURLY_BRACE  shift, and go to state 32
+    SEMI_COLON           shift, and go to state 33
+    INHERITS             shift, and go to state 34
+
+    polymorphic_opt  go to state 35
+
+
+State 27
+
+   44 var_dcl: CONST type . $@2 var_dcl_cnts SEMI_COLON
+
+    $default  reduce using rule 43 ($@2)
+
+    $@2  go to state 36
+
+
+State 28
+
+   29 proc_dcl: PROCEDURE ID . OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS SEMI_COLON
+   30         | PROCEDURE ID . OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS block
+
+    OPENING_PARENTHESIS  shift, and go to state 37
+
+
+State 29
+
+    4 program: program_parts program .
+
+    $default  reduce using rule 4 (program)
+
+
+State 30
+
+   21 func_dcl: type ID . OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS SEMI_COLON
+   22         | type ID . OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS block
+
+    OPENING_PARENTHESIS  shift, and go to state 38
+
+
+State 31
+
+   46 var_dcl: type $@3 . var_dcl_cnts SEMI_COLON
+
+    ID  shift, and go to state 39
+
+    var_dcl_cnts  go to state 40
+    var_dcl_cnt   go to state 41
+    assignment    go to state 42
+    variable      go to state 43
+
+
+State 32
+
+   11 class_dcl: CLASS ID OPENING_CURLY_BRACE . class_body CLOSING_CURLY_BRACE SEMI_COLON
+
+    PRIVATE  shift, and go to state 44
+    PUBLIC   shift, and go to state 45
+
+    $default  reduce using rule 14 (class_body)
+
+    class_body     go to state 46
+    spec_on_class  go to state 47
+    access_level   go to state 48
+
+
+State 33
+
+    8 class_def_decleration: CLASS ID SEMI_COLON .
+
+    $default  reduce using rule 8 (class_def_decleration)
+
+
+State 34
+
+   12 polymorphic_opt: INHERITS . COLON ID COMMA polymorphic_opt
+   13                | INHERITS . COLON ID
+
+    COLON  shift, and go to state 49
+
+
+State 35
+
+   10 class_dcl: CLASS ID polymorphic_opt . OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE SEMI_COLON
+
+    OPENING_CURLY_BRACE  shift, and go to state 50
+
+
+State 36
+
+   44 var_dcl: CONST type $@2 . var_dcl_cnts SEMI_COLON
+
+    ID  shift, and go to state 39
+
+    var_dcl_cnts  go to state 51
+    var_dcl_cnt   go to state 41
+    assignment    go to state 42
+    variable      go to state 43
+
+
+State 37
+
+   29 proc_dcl: PROCEDURE ID OPENING_PARENTHESIS . arguments CLOSING_PARENTHESIS SEMI_COLON
+   30         | PROCEDURE ID OPENING_PARENTHESIS . arguments CLOSING_PARENTHESIS block
+
+    ID      shift, and go to state 4
+    AUTO    shift, and go to state 5
+    BOOL    shift, and go to state 6
+    CHAR    shift, and go to state 7
+    DOUBLE  shift, and go to state 10
+    FLOAT   shift, and go to state 11
+    INT     shift, and go to state 12
+    LONG    shift, and go to state 13
+    STRING  shift, and go to state 15
+    VOID    shift, and go to state 16
+
+    $default  reduce using rule 25 (arguments)
+
+    argument   go to state 52
+    arguments  go to state 53
+    type       go to state 54
+
+
+State 38
+
+   21 func_dcl: type ID OPENING_PARENTHESIS . arguments CLOSING_PARENTHESIS SEMI_COLON
+   22         | type ID OPENING_PARENTHESIS . arguments CLOSING_PARENTHESIS block
+
+    ID      shift, and go to state 4
+    AUTO    shift, and go to state 5
+    BOOL    shift, and go to state 6
+    CHAR    shift, and go to state 7
+    DOUBLE  shift, and go to state 10
+    FLOAT   shift, and go to state 11
+    INT     shift, and go to state 12
+    LONG    shift, and go to state 13
+    STRING  shift, and go to state 15
+    VOID    shift, and go to state 16
+
+    $default  reduce using rule 25 (arguments)
+
+    argument   go to state 52
+    arguments  go to state 55
+    type       go to state 54
+
+
+State 39
+
+  122 variable: ID .
+  123         | ID . DOT variable
+  124         | ID . array_use
+  125         | ID . array_use DOT variable
+
+    DOT            shift, and go to state 56
+    OPENING_BRACE  shift, and go to state 57
+
+    $default  reduce using rule 122 (variable)
+
+    array_use  go to state 58
+
+
+State 40
+
+   46 var_dcl: type $@3 var_dcl_cnts . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 59
+
+
+State 41
+
+   47 var_dcl_cnts: var_dcl_cnt .
+   48             | var_dcl_cnt . COMMA var_dcl_cnts
+
+    COMMA  shift, and go to state 60
+
+    $default  reduce using rule 47 (var_dcl_cnts)
+
+
+State 42
+
+   50 var_dcl_cnt: assignment .
+
+    $default  reduce using rule 50 (var_dcl_cnt)
+
+
+State 43
+
+   49 var_dcl_cnt: variable .
+   68 assignment: variable . ASSIGNMENT $@4 expr
+   70           | variable . ASSIGNMENT $@5 NEW
+
+    ASSIGNMENT  shift, and go to state 61
+
+    $default  reduce using rule 49 (var_dcl_cnt)
+
+
+State 44
+
+   32 access_level: PRIVATE .
+
+    $default  reduce using rule 32 (access_level)
+
+
+State 45
+
+   31 access_level: PUBLIC .
+
+    $default  reduce using rule 31 (access_level)
+
+
+State 46
+
+   11 class_dcl: CLASS ID OPENING_CURLY_BRACE class_body . CLOSING_CURLY_BRACE SEMI_COLON
+
+    CLOSING_CURLY_BRACE  shift, and go to state 62
+
+
+State 47
+
+   15 class_body: spec_on_class . var_dcl class_body
+   16           | spec_on_class . func_dcl class_body
+
+    ID      shift, and go to state 4
+    AUTO    shift, and go to state 5
+    BOOL    shift, and go to state 6
+    CHAR    shift, and go to state 7
+    CONST   shift, and go to state 9
+    DOUBLE  shift, and go to state 10
+    FLOAT   shift, and go to state 11
+    INT     shift, and go to state 12
+    LONG    shift, and go to state 13
+    STRING  shift, and go to state 15
+    VOID    shift, and go to state 16
+
+    func_dcl  go to state 63
+    type      go to state 24
+    var_dcl   go to state 64
+
+
+State 48
+
+   17 spec_on_class: access_level .
+   18              | access_level . STATIC
+
+    STATIC  shift, and go to state 65
+
+    $default  reduce using rule 17 (spec_on_class)
+
+
+State 49
+
+   12 polymorphic_opt: INHERITS COLON . ID COMMA polymorphic_opt
+   13                | INHERITS COLON . ID
+
+    ID  shift, and go to state 66
+
+
+State 50
+
+   10 class_dcl: CLASS ID polymorphic_opt OPENING_CURLY_BRACE . class_body CLOSING_CURLY_BRACE SEMI_COLON
+
+    PRIVATE  shift, and go to state 44
+    PUBLIC   shift, and go to state 45
+
+    $default  reduce using rule 14 (class_body)
+
+    class_body     go to state 67
+    spec_on_class  go to state 47
+    access_level   go to state 48
+
+
+State 51
+
+   44 var_dcl: CONST type $@2 var_dcl_cnts . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 68
+
+
+State 52
+
+   26 arguments: argument .
+
+    $default  reduce using rule 26 (arguments)
+
+
+State 53
+
+   29 proc_dcl: PROCEDURE ID OPENING_PARENTHESIS arguments . CLOSING_PARENTHESIS SEMI_COLON
+   30         | PROCEDURE ID OPENING_PARENTHESIS arguments . CLOSING_PARENTHESIS block
+
+    CLOSING_PARENTHESIS  shift, and go to state 69
+
+
+State 54
+
+   23 argument: type . ID array_dcl
+   24         | type . ID array_dcl COMMA argument
+
+    ID  shift, and go to state 70
+
+
+State 55
+
+   21 func_dcl: type ID OPENING_PARENTHESIS arguments . CLOSING_PARENTHESIS SEMI_COLON
+   22         | type ID OPENING_PARENTHESIS arguments . CLOSING_PARENTHESIS block
+
+    CLOSING_PARENTHESIS  shift, and go to state 71
+
+
+State 56
+
+  123 variable: ID DOT . variable
+
+    ID  shift, and go to state 39
+
+    variable  go to state 72
+
+
+State 57
+
+  126 array_use: OPENING_BRACE . expr CLOSING_BRACE array_use
+  127          | OPENING_BRACE . expr CLOSING_BRACE
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 86
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 58
+
+  124 variable: ID array_use .
+  125         | ID array_use . DOT variable
+
+    DOT  shift, and go to state 90
+
+    $default  reduce using rule 124 (variable)
+
+
+State 59
+
+   46 var_dcl: type $@3 var_dcl_cnts SEMI_COLON .
+
+    $default  reduce using rule 46 (var_dcl)
+
+
+State 60
+
+   48 var_dcl_cnts: var_dcl_cnt COMMA . var_dcl_cnts
+
+    ID  shift, and go to state 39
+
+    var_dcl_cnts  go to state 91
+    var_dcl_cnt   go to state 41
+    assignment    go to state 42
+    variable      go to state 43
+
+
+State 61
+
+   68 assignment: variable ASSIGNMENT . $@4 expr
+   70           | variable ASSIGNMENT . $@5 NEW
+
+    NEW       reduce using rule 69 ($@5)
+    $default  reduce using rule 67 ($@4)
+
+    $@4  go to state 92
+    $@5  go to state 93
+
+
+State 62
+
+   11 class_dcl: CLASS ID OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 94
+
+
+State 63
+
+   16 class_body: spec_on_class func_dcl . class_body
+
+    PRIVATE  shift, and go to state 44
+    PUBLIC   shift, and go to state 45
+
+    $default  reduce using rule 14 (class_body)
+
+    class_body     go to state 95
+    spec_on_class  go to state 47
+    access_level   go to state 48
+
+
+State 64
+
+   15 class_body: spec_on_class var_dcl . class_body
+
+    PRIVATE  shift, and go to state 44
+    PUBLIC   shift, and go to state 45
+
+    $default  reduce using rule 14 (class_body)
+
+    class_body     go to state 96
+    spec_on_class  go to state 47
+    access_level   go to state 48
+
+
+State 65
+
+   18 spec_on_class: access_level STATIC .
+
+    $default  reduce using rule 18 (spec_on_class)
+
+
+State 66
+
+   12 polymorphic_opt: INHERITS COLON ID . COMMA polymorphic_opt
+   13                | INHERITS COLON ID .
+
+    COMMA  shift, and go to state 97
+
+    $default  reduce using rule 13 (polymorphic_opt)
+
+
+State 67
+
+   10 class_dcl: CLASS ID polymorphic_opt OPENING_CURLY_BRACE class_body . CLOSING_CURLY_BRACE SEMI_COLON
+
+    CLOSING_CURLY_BRACE  shift, and go to state 98
+
+
+State 68
+
+   44 var_dcl: CONST type $@2 var_dcl_cnts SEMI_COLON .
+
+    $default  reduce using rule 44 (var_dcl)
+
+
+State 69
+
+   29 proc_dcl: PROCEDURE ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS . SEMI_COLON
+   30         | PROCEDURE ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS . block
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+    SEMI_COLON           shift, and go to state 100
+
+    block  go to state 101
+
+
+State 70
+
+   23 argument: type ID . array_dcl
+   24         | type ID . array_dcl COMMA argument
+
+    OPENING_BRACE  shift, and go to state 102
+
+    $default  reduce using rule 27 (array_dcl)
+
+    array_dcl  go to state 103
+
+
+State 71
+
+   21 func_dcl: type ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS . SEMI_COLON
+   22         | type ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS . block
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+    SEMI_COLON           shift, and go to state 104
+
+    block  go to state 105
+
+
+State 72
+
+  123 variable: ID DOT variable .
+
+    $default  reduce using rule 123 (variable)
+
+
+State 73
+
+  118 expr: NOT . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 106
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 74
+
+  120 unary_op: INCREMENT .
+
+    $default  reduce using rule 120 (unary_op)
+
+
+State 75
+
+  121 unary_op: DECREMENT .
+
+    $default  reduce using rule 121 (unary_op)
+
+
+State 76
+
+  119 expr: SUB_AND_UNARY_MINUS . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 107
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 77
+
+  112 expr: OPENING_PARENTHESIS . expr CLOSING_PARENTHESIS
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 108
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 78
+
+  131 const_val: BOOLEAN_CONST .
+
+    $default  reduce using rule 131 (const_val)
+
+
+State 79
+
+  128 const_val: INTEGER_CONST .
+
+    $default  reduce using rule 128 (const_val)
+
+
+State 80
+
+  133 const_val: LONG_CONST .
+
+    $default  reduce using rule 133 (const_val)
+
+
+State 81
+
+  129 const_val: REAL_CONST .
+
+    $default  reduce using rule 129 (const_val)
+
+
+State 82
+
+  130 const_val: CHARACTER_CONST .
+
+    $default  reduce using rule 130 (const_val)
+
+
+State 83
+
+  132 const_val: STRING_CONST .
+
+    $default  reduce using rule 132 (const_val)
+
+
+State 84
+
+   71 method_call: ID . OPENING_PARENTHESIS parameters CLOSING_PARENTHESIS
+   72            | ID . OPENING_PARENTHESIS CLOSING_PARENTHESIS
+   73            | ID . DOT method_call
+  122 variable: ID .
+  123         | ID . DOT variable
+  124         | ID . array_use
+  125         | ID . array_use DOT variable
+
+    OPENING_PARENTHESIS  shift, and go to state 109
+    DOT                  shift, and go to state 110
+    OPENING_BRACE        shift, and go to state 57
+
+    $default  reduce using rule 122 (variable)
+
+    array_use  go to state 58
+
+
+State 85
+
+  116 expr: method_call .
+
+    $default  reduce using rule 116 (expr)
+
+
+State 86
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+  126 array_use: OPENING_BRACE expr . CLOSING_BRACE array_use
+  127          | OPENING_BRACE expr . CLOSING_BRACE
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+    CLOSING_BRACE              shift, and go to state 127
+
+
+State 87
+
+  113 expr: unary_op . variable
+
+    ID  shift, and go to state 39
+
+    variable  go to state 128
+
+
+State 88
+
+  114 expr: variable . unary_op
+  115     | variable .
+
+    INCREMENT  shift, and go to state 74
+    DECREMENT  shift, and go to state 75
+
+    $default  reduce using rule 115 (expr)
+
+    unary_op  go to state 129
+
+
+State 89
+
+  117 expr: const_val .
+
+    $default  reduce using rule 117 (expr)
+
+
+State 90
+
+  125 variable: ID array_use DOT . variable
+
+    ID  shift, and go to state 39
+
+    variable  go to state 130
+
+
+State 91
+
+   48 var_dcl_cnts: var_dcl_cnt COMMA var_dcl_cnts .
+
+    $default  reduce using rule 48 (var_dcl_cnts)
+
+
+State 92
+
+   68 assignment: variable ASSIGNMENT $@4 . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 131
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 93
+
+   70 assignment: variable ASSIGNMENT $@5 . NEW
+
+    NEW  shift, and go to state 132
+
+
+State 94
+
+   11 class_dcl: CLASS ID OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE SEMI_COLON .
+
+    $default  reduce using rule 11 (class_dcl)
+
+
+State 95
+
+   16 class_body: spec_on_class func_dcl class_body .
+
+    $default  reduce using rule 16 (class_body)
+
+
+State 96
+
+   15 class_body: spec_on_class var_dcl class_body .
+
+    $default  reduce using rule 15 (class_body)
+
+
+State 97
+
+   12 polymorphic_opt: INHERITS COLON ID COMMA . polymorphic_opt
+
+    INHERITS  shift, and go to state 34
+
+    polymorphic_opt  go to state 133
+
+
+State 98
+
+   10 class_dcl: CLASS ID polymorphic_opt OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 134
+
+
+State 99
+
+   51 block: OPENING_CURLY_BRACE . run_content CLOSING_CURLY_BRACE
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 135
+    AUTO                 shift, and go to state 5
+    BOOL                 shift, and go to state 6
+    BREAK                shift, and go to state 136
+    CHAR                 shift, and go to state 7
+    CONST                shift, and go to state 9
+    CONTINUE             shift, and go to state 137
+    DESTRUCT             shift, and go to state 138
+    DOUBLE               shift, and go to state 10
+    FLOAT                shift, and go to state 11
+    FOR                  shift, and go to state 139
+    FOREACH              shift, and go to state 140
+    GOTO                 shift, and go to state 141
+    IF                   shift, and go to state 142
+    INT                  shift, and go to state 12
+    LONG                 shift, and go to state 13
+    REPEAT               shift, and go to state 143
+    RETURN               shift, and go to state 144
+    SIZEOF               shift, and go to state 145
+    STRING               shift, and go to state 15
+    SWITCH               shift, and go to state 146
+    VOID                 shift, and go to state 16
+
+    $default  reduce using rule 52 (run_content)
+
+    type         go to state 147
+    var_dcl      go to state 148
+    run_content  go to state 149
+    statement    go to state 150
+    assignment   go to state 151
+    method_call  go to state 85
+    cond_stmt    go to state 152
+    loop_stmt    go to state 153
+    goto         go to state 154
+    label        go to state 155
+    expr         go to state 156
+    unary_op     go to state 87
+    variable     go to state 157
+    const_val    go to state 89
+
+
+State 100
+
+   29 proc_dcl: PROCEDURE ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS SEMI_COLON .
+
+    $default  reduce using rule 29 (proc_dcl)
+
+
+State 101
+
+   30 proc_dcl: PROCEDURE ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS block .
+
+    $default  reduce using rule 30 (proc_dcl)
+
+
+State 102
+
+   28 array_dcl: OPENING_BRACE . CLOSING_BRACE array_dcl
+
+    CLOSING_BRACE  shift, and go to state 158
+
+
+State 103
+
+   23 argument: type ID array_dcl .
+   24         | type ID array_dcl . COMMA argument
+
+    COMMA  shift, and go to state 159
+
+    $default  reduce using rule 23 (argument)
+
+
+State 104
+
+   21 func_dcl: type ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS SEMI_COLON .
+
+    $default  reduce using rule 21 (func_dcl)
+
+
+State 105
+
+   22 func_dcl: type ID OPENING_PARENTHESIS arguments CLOSING_PARENTHESIS block .
+
+    $default  reduce using rule 22 (func_dcl)
+
+
+State 106
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+  118     | NOT expr .
+
+    $default  reduce using rule 118 (expr)
+
+
+State 107
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+  119     | SUB_AND_UNARY_MINUS expr .
+
+    $default  reduce using rule 119 (expr)
+
+
+State 108
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+  112     | OPENING_PARENTHESIS expr . CLOSING_PARENTHESIS
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+    CLOSING_PARENTHESIS        shift, and go to state 160
+
+
+State 109
+
+   71 method_call: ID OPENING_PARENTHESIS . parameters CLOSING_PARENTHESIS
+   72            | ID OPENING_PARENTHESIS . CLOSING_PARENTHESIS
+
+    CLOSING_PARENTHESIS  shift, and go to state 161
+    ID                   shift, and go to state 39
+
+    parameters  go to state 162
+    variable    go to state 163
+
+
+State 110
+
+   73 method_call: ID DOT . method_call
+  123 variable: ID DOT . variable
+
+    ID  shift, and go to state 84
+
+    method_call  go to state 164
+    variable     go to state 72
+
+
+State 111
+
+  106 expr: expr EQUAL . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 165
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 112
+
+  107 expr: expr NOT_EQUAL . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 166
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 113
+
+  110 expr: expr LESS_OR_EQUAL . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 167
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 114
+
+  111 expr: expr LESS_THAN . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 168
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 115
+
+  109 expr: expr BIGGER_THAN . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 169
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 116
+
+  108 expr: expr BIGGER_OR_EQUAL . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 170
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 117
+
+  102 expr: expr ARITHMATIC_AND . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 171
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 118
+
+  101 expr: expr LOGICAL_AND . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 172
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 119
+
+  103 expr: expr ARITHMATIC_OR . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 173
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 120
+
+  104 expr: expr LOGICAL_OR . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 174
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 121
+
+  105 expr: expr LOGICAL_OR_ARITHMATIC_XOR . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 175
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 122
+
+   98 expr: expr PRODUCTION . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 176
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 123
+
+   96 expr: expr ADD . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 177
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 124
+
+   97 expr: expr SUB_AND_UNARY_MINUS . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 178
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 125
+
+   99 expr: expr DIV . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 179
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 126
+
+  100 expr: expr MOD . expr
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 180
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 127
+
+  126 array_use: OPENING_BRACE expr CLOSING_BRACE . array_use
+  127          | OPENING_BRACE expr CLOSING_BRACE .
+
+    OPENING_BRACE  shift, and go to state 57
+
+    $default  reduce using rule 127 (array_use)
+
+    array_use  go to state 181
+
+
+State 128
+
+  113 expr: unary_op variable .
+
+    $default  reduce using rule 113 (expr)
+
+
+State 129
+
+  114 expr: variable unary_op .
+
+    $default  reduce using rule 114 (expr)
+
+
+State 130
+
+  125 variable: ID array_use DOT variable .
+
+    $default  reduce using rule 125 (variable)
+
+
+State 131
+
+   68 assignment: variable ASSIGNMENT $@4 expr .
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+
+    $default  reduce using rule 68 (assignment)
+
+
+State 132
+
+   70 assignment: variable ASSIGNMENT $@5 NEW .
+
+    $default  reduce using rule 70 (assignment)
+
+
+State 133
+
+   12 polymorphic_opt: INHERITS COLON ID COMMA polymorphic_opt .
+
+    $default  reduce using rule 12 (polymorphic_opt)
+
+
+State 134
+
+   10 class_dcl: CLASS ID polymorphic_opt OPENING_CURLY_BRACE class_body CLOSING_CURLY_BRACE SEMI_COLON .
+
+    $default  reduce using rule 10 (class_dcl)
+
+
+State 135
+
+   39 type: ID .
+   71 method_call: ID . OPENING_PARENTHESIS parameters CLOSING_PARENTHESIS
+   72            | ID . OPENING_PARENTHESIS CLOSING_PARENTHESIS
+   73            | ID . DOT method_call
+   95 label: ID . COLON
+  122 variable: ID .
+  123         | ID . DOT variable
+  124         | ID . array_use
+  125         | ID . array_use DOT variable
+
+    OPENING_PARENTHESIS  shift, and go to state 109
+    DOT                  shift, and go to state 110
+    COLON                shift, and go to state 182
+    OPENING_BRACE        shift, and go to state 57
+
+    ID        reduce using rule 39 (type)
+    $default  reduce using rule 122 (variable)
+
+    array_use  go to state 58
+
+
+State 136
+
+   63 statement: BREAK . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 183
+
+
+State 137
+
+   64 statement: CONTINUE . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 184
+
+
+State 138
+
+   65 statement: DESTRUCT . array_dcl ID SEMI_COLON
+
+    OPENING_BRACE  shift, and go to state 102
+
+    $default  reduce using rule 27 (array_dcl)
+
+    array_dcl  go to state 185
+
+
+State 139
+
+   85 loop_stmt: FOR . OPENING_PARENTHESIS var_dcl $@7 expr $@8 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+   88          | FOR . OPENING_PARENTHESIS $@9 SEMI_COLON expr $@10 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+    OPENING_PARENTHESIS  shift, and go to state 186
+
+
+State 140
+
+   92 loop_stmt: FOREACH . OPENING_PARENTHESIS ID IN ID CLOSING_PARENTHESIS block
+
+    OPENING_PARENTHESIS  shift, and go to state 187
+
+
+State 141
+
+   94 goto: GOTO . ID
+
+    ID  shift, and go to state 188
+
+
+State 142
+
+   76 cond_stmt: IF . OPENING_PARENTHESIS expr closing_paranthes block
+   78          | IF . OPENING_PARENTHESIS expr closing_paranthes block ELSE $@6 block
+
+    OPENING_PARENTHESIS  shift, and go to state 189
+
+
+State 143
+
+   91 loop_stmt: REPEAT . $@11 block UNTIL OPENING_PARENTHESIS expr $@12 CLOSING_PARENTHESIS SEMI_COLON
+
+    $default  reduce using rule 89 ($@11)
+
+    $@11  go to state 190
+
+
+State 144
+
+   59 statement: RETURN . SEMI_COLON
+   60          | RETURN . expr SEMI_COLON
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    SEMI_COLON           shift, and go to state 191
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 192
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 145
+
+   66 statement: SIZEOF . OPENING_PARENTHESIS type CLOSING_PARENTHESIS SEMI_COLON
+
+    OPENING_PARENTHESIS  shift, and go to state 193
+
+
+State 146
+
+   79 cond_stmt: SWITCH . OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE cases DEFAULT COLON block CLOSING_CURLY_BRACE
+
+    OPENING_PARENTHESIS  shift, and go to state 194
+
+
+State 147
+
+   46 var_dcl: type . $@3 var_dcl_cnts SEMI_COLON
+
+    $default  reduce using rule 45 ($@3)
+
+    $@3  go to state 31
+
+
+State 148
+
+   53 run_content: var_dcl . run_content
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 135
+    AUTO                 shift, and go to state 5
+    BOOL                 shift, and go to state 6
+    BREAK                shift, and go to state 136
+    CHAR                 shift, and go to state 7
+    CONST                shift, and go to state 9
+    CONTINUE             shift, and go to state 137
+    DESTRUCT             shift, and go to state 138
+    DOUBLE               shift, and go to state 10
+    FLOAT                shift, and go to state 11
+    FOR                  shift, and go to state 139
+    FOREACH              shift, and go to state 140
+    GOTO                 shift, and go to state 141
+    IF                   shift, and go to state 142
+    INT                  shift, and go to state 12
+    LONG                 shift, and go to state 13
+    REPEAT               shift, and go to state 143
+    RETURN               shift, and go to state 144
+    SIZEOF               shift, and go to state 145
+    STRING               shift, and go to state 15
+    SWITCH               shift, and go to state 146
+    VOID                 shift, and go to state 16
+
+    $default  reduce using rule 52 (run_content)
+
+    type         go to state 147
+    var_dcl      go to state 148
+    run_content  go to state 195
+    statement    go to state 150
+    assignment   go to state 151
+    method_call  go to state 85
+    cond_stmt    go to state 152
+    loop_stmt    go to state 153
+    goto         go to state 154
+    label        go to state 155
+    expr         go to state 156
+    unary_op     go to state 87
+    variable     go to state 157
+    const_val    go to state 89
+
+
+State 149
+
+   51 block: OPENING_CURLY_BRACE run_content . CLOSING_CURLY_BRACE
+
+    CLOSING_CURLY_BRACE  shift, and go to state 196
+
+
+State 150
+
+   54 run_content: statement . run_content
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 135
+    AUTO                 shift, and go to state 5
+    BOOL                 shift, and go to state 6
+    BREAK                shift, and go to state 136
+    CHAR                 shift, and go to state 7
+    CONST                shift, and go to state 9
+    CONTINUE             shift, and go to state 137
+    DESTRUCT             shift, and go to state 138
+    DOUBLE               shift, and go to state 10
+    FLOAT                shift, and go to state 11
+    FOR                  shift, and go to state 139
+    FOREACH              shift, and go to state 140
+    GOTO                 shift, and go to state 141
+    IF                   shift, and go to state 142
+    INT                  shift, and go to state 12
+    LONG                 shift, and go to state 13
+    REPEAT               shift, and go to state 143
+    RETURN               shift, and go to state 144
+    SIZEOF               shift, and go to state 145
+    STRING               shift, and go to state 15
+    SWITCH               shift, and go to state 146
+    VOID                 shift, and go to state 16
+
+    $default  reduce using rule 52 (run_content)
+
+    type         go to state 147
+    var_dcl      go to state 148
+    run_content  go to state 197
+    statement    go to state 150
+    assignment   go to state 151
+    method_call  go to state 85
+    cond_stmt    go to state 152
+    loop_stmt    go to state 153
+    goto         go to state 154
+    label        go to state 155
+    expr         go to state 156
+    unary_op     go to state 87
+    variable     go to state 157
+    const_val    go to state 89
+
+
+State 151
+
+   55 statement: assignment . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 198
+
+
+State 152
+
+   57 statement: cond_stmt .
+
+    $default  reduce using rule 57 (statement)
+
+
+State 153
+
+   58 statement: loop_stmt .
+
+    $default  reduce using rule 58 (statement)
+
+
+State 154
+
+   61 statement: goto . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 199
+
+
+State 155
+
+   62 statement: label .
+
+    $default  reduce using rule 62 (statement)
+
+
+State 156
+
+   56 statement: expr . SEMI_COLON
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+    SEMI_COLON                 shift, and go to state 200
+
+
+State 157
+
+   68 assignment: variable . ASSIGNMENT $@4 expr
+   70           | variable . ASSIGNMENT $@5 NEW
+  114 expr: variable . unary_op
+  115     | variable .
+
+    ASSIGNMENT  shift, and go to state 61
+    INCREMENT   shift, and go to state 74
+    DECREMENT   shift, and go to state 75
+
+    $default  reduce using rule 115 (expr)
+
+    unary_op  go to state 129
+
+
+State 158
+
+   28 array_dcl: OPENING_BRACE CLOSING_BRACE . array_dcl
+
+    OPENING_BRACE  shift, and go to state 102
+
+    $default  reduce using rule 27 (array_dcl)
+
+    array_dcl  go to state 201
+
+
+State 159
+
+   24 argument: type ID array_dcl COMMA . argument
+
+    ID      shift, and go to state 4
+    AUTO    shift, and go to state 5
+    BOOL    shift, and go to state 6
+    CHAR    shift, and go to state 7
+    DOUBLE  shift, and go to state 10
+    FLOAT   shift, and go to state 11
+    INT     shift, and go to state 12
+    LONG    shift, and go to state 13
+    STRING  shift, and go to state 15
+    VOID    shift, and go to state 16
+
+    argument  go to state 202
+    type      go to state 54
+
+
+State 160
+
+  112 expr: OPENING_PARENTHESIS expr CLOSING_PARENTHESIS .
+
+    $default  reduce using rule 112 (expr)
+
+
+State 161
+
+   72 method_call: ID OPENING_PARENTHESIS CLOSING_PARENTHESIS .
+
+    $default  reduce using rule 72 (method_call)
+
+
+State 162
+
+   71 method_call: ID OPENING_PARENTHESIS parameters . CLOSING_PARENTHESIS
+
+    CLOSING_PARENTHESIS  shift, and go to state 203
+
+
+State 163
+
+   74 parameters: variable .
+   75           | variable . COMMA parameters
+
+    COMMA  shift, and go to state 204
+
+    $default  reduce using rule 74 (parameters)
+
+
+State 164
+
+   73 method_call: ID DOT method_call .
+
+    $default  reduce using rule 73 (method_call)
+
+
+State 165
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  106     | expr EQUAL expr .
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    LESS_OR_EQUAL        shift, and go to state 113
+    LESS_THAN            shift, and go to state 114
+    BIGGER_THAN          shift, and go to state 115
+    BIGGER_OR_EQUAL      shift, and go to state 116
+    PRODUCTION           shift, and go to state 122
+    ADD                  shift, and go to state 123
+    SUB_AND_UNARY_MINUS  shift, and go to state 124
+    DIV                  shift, and go to state 125
+    MOD                  shift, and go to state 126
+
+    $default  reduce using rule 106 (expr)
+
+
+State 166
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  107     | expr NOT_EQUAL expr .
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    LESS_OR_EQUAL        shift, and go to state 113
+    LESS_THAN            shift, and go to state 114
+    BIGGER_THAN          shift, and go to state 115
+    BIGGER_OR_EQUAL      shift, and go to state 116
+    PRODUCTION           shift, and go to state 122
+    ADD                  shift, and go to state 123
+    SUB_AND_UNARY_MINUS  shift, and go to state 124
+    DIV                  shift, and go to state 125
+    MOD                  shift, and go to state 126
+
+    $default  reduce using rule 107 (expr)
+
+
+State 167
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  110     | expr LESS_OR_EQUAL expr .
+  111     | expr . LESS_THAN expr
+
+    PRODUCTION           shift, and go to state 122
+    ADD                  shift, and go to state 123
+    SUB_AND_UNARY_MINUS  shift, and go to state 124
+    DIV                  shift, and go to state 125
+    MOD                  shift, and go to state 126
+
+    $default  reduce using rule 110 (expr)
+
+
+State 168
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+  111     | expr LESS_THAN expr .
+
+    PRODUCTION           shift, and go to state 122
+    ADD                  shift, and go to state 123
+    SUB_AND_UNARY_MINUS  shift, and go to state 124
+    DIV                  shift, and go to state 125
+    MOD                  shift, and go to state 126
+
+    $default  reduce using rule 111 (expr)
+
+
+State 169
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  109     | expr BIGGER_THAN expr .
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    PRODUCTION           shift, and go to state 122
+    ADD                  shift, and go to state 123
+    SUB_AND_UNARY_MINUS  shift, and go to state 124
+    DIV                  shift, and go to state 125
+    MOD                  shift, and go to state 126
+
+    $default  reduce using rule 109 (expr)
+
+
+State 170
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  108     | expr BIGGER_OR_EQUAL expr .
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    PRODUCTION           shift, and go to state 122
+    ADD                  shift, and go to state 123
+    SUB_AND_UNARY_MINUS  shift, and go to state 124
+    DIV                  shift, and go to state 125
+    MOD                  shift, and go to state 126
+
+    $default  reduce using rule 108 (expr)
+
+
+State 171
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  102     | expr ARITHMATIC_AND expr .
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                shift, and go to state 111
+    NOT_EQUAL            shift, and go to state 112
+    LESS_OR_EQUAL        shift, and go to state 113
+    LESS_THAN            shift, and go to state 114
+    BIGGER_THAN          shift, and go to state 115
+    BIGGER_OR_EQUAL      shift, and go to state 116
+    PRODUCTION           shift, and go to state 122
+    ADD                  shift, and go to state 123
+    SUB_AND_UNARY_MINUS  shift, and go to state 124
+    DIV                  shift, and go to state 125
+    MOD                  shift, and go to state 126
+
+    $default  reduce using rule 102 (expr)
+
+
+State 172
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  101     | expr LOGICAL_AND expr .
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+
+    $default  reduce using rule 101 (expr)
+
+
+State 173
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  103     | expr ARITHMATIC_OR expr .
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+
+    $default  reduce using rule 103 (expr)
+
+
+State 174
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  104     | expr LOGICAL_OR expr .
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+
+    $default  reduce using rule 104 (expr)
+
+
+State 175
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  105     | expr LOGICAL_OR_ARITHMATIC_XOR expr .
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                shift, and go to state 111
+    NOT_EQUAL            shift, and go to state 112
+    LESS_OR_EQUAL        shift, and go to state 113
+    LESS_THAN            shift, and go to state 114
+    BIGGER_THAN          shift, and go to state 115
+    BIGGER_OR_EQUAL      shift, and go to state 116
+    ARITHMATIC_AND       shift, and go to state 117
+    PRODUCTION           shift, and go to state 122
+    ADD                  shift, and go to state 123
+    SUB_AND_UNARY_MINUS  shift, and go to state 124
+    DIV                  shift, and go to state 125
+    MOD                  shift, and go to state 126
+
+    $default  reduce using rule 105 (expr)
+
+
+State 176
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   98     | expr PRODUCTION expr .
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    $default  reduce using rule 98 (expr)
+
+
+State 177
+
+   96 expr: expr . ADD expr
+   96     | expr ADD expr .
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    PRODUCTION  shift, and go to state 122
+    DIV         shift, and go to state 125
+    MOD         shift, and go to state 126
+
+    $default  reduce using rule 96 (expr)
+
+
+State 178
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   97     | expr SUB_AND_UNARY_MINUS expr .
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    PRODUCTION  shift, and go to state 122
+    DIV         shift, and go to state 125
+    MOD         shift, and go to state 126
+
+    $default  reduce using rule 97 (expr)
+
+
+State 179
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+   99     | expr DIV expr .
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    $default  reduce using rule 99 (expr)
+
+
+State 180
+
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  100     | expr MOD expr .
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    $default  reduce using rule 100 (expr)
+
+
+State 181
+
+  126 array_use: OPENING_BRACE expr CLOSING_BRACE array_use .
+
+    $default  reduce using rule 126 (array_use)
+
+
+State 182
+
+   95 label: ID COLON .
+
+    $default  reduce using rule 95 (label)
+
+
+State 183
+
+   63 statement: BREAK SEMI_COLON .
+
+    $default  reduce using rule 63 (statement)
+
+
+State 184
+
+   64 statement: CONTINUE SEMI_COLON .
+
+    $default  reduce using rule 64 (statement)
+
+
+State 185
+
+   65 statement: DESTRUCT array_dcl . ID SEMI_COLON
+
+    ID  shift, and go to state 205
+
+
+State 186
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS . var_dcl $@7 expr $@8 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+   88          | FOR OPENING_PARENTHESIS . $@9 SEMI_COLON expr $@10 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+    ID      shift, and go to state 4
+    AUTO    shift, and go to state 5
+    BOOL    shift, and go to state 6
+    CHAR    shift, and go to state 7
+    CONST   shift, and go to state 9
+    DOUBLE  shift, and go to state 10
+    FLOAT   shift, and go to state 11
+    INT     shift, and go to state 12
+    LONG    shift, and go to state 13
+    STRING  shift, and go to state 15
+    VOID    shift, and go to state 16
+
+    $default  reduce using rule 86 ($@9)
+
+    type     go to state 147
+    var_dcl  go to state 206
+    $@9      go to state 207
+
+
+State 187
+
+   92 loop_stmt: FOREACH OPENING_PARENTHESIS . ID IN ID CLOSING_PARENTHESIS block
+
+    ID  shift, and go to state 208
+
+
+State 188
+
+   94 goto: GOTO ID .
+
+    $default  reduce using rule 94 (goto)
+
+
+State 189
+
+   76 cond_stmt: IF OPENING_PARENTHESIS . expr closing_paranthes block
+   78          | IF OPENING_PARENTHESIS . expr closing_paranthes block ELSE $@6 block
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 209
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 190
+
+   91 loop_stmt: REPEAT $@11 . block UNTIL OPENING_PARENTHESIS expr $@12 CLOSING_PARENTHESIS SEMI_COLON
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+
+    block  go to state 210
+
+
+State 191
+
+   59 statement: RETURN SEMI_COLON .
+
+    $default  reduce using rule 59 (statement)
+
+
+State 192
+
+   60 statement: RETURN expr . SEMI_COLON
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+    SEMI_COLON                 shift, and go to state 211
+
+
+State 193
+
+   66 statement: SIZEOF OPENING_PARENTHESIS . type CLOSING_PARENTHESIS SEMI_COLON
+
+    ID      shift, and go to state 4
+    AUTO    shift, and go to state 5
+    BOOL    shift, and go to state 6
+    CHAR    shift, and go to state 7
+    DOUBLE  shift, and go to state 10
+    FLOAT   shift, and go to state 11
+    INT     shift, and go to state 12
+    LONG    shift, and go to state 13
+    STRING  shift, and go to state 15
+    VOID    shift, and go to state 16
+
+    type  go to state 212
+
+
+State 194
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS . ID CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE cases DEFAULT COLON block CLOSING_CURLY_BRACE
+
+    ID  shift, and go to state 213
+
+
+State 195
+
+   53 run_content: var_dcl run_content .
+
+    $default  reduce using rule 53 (run_content)
+
+
+State 196
+
+   51 block: OPENING_CURLY_BRACE run_content CLOSING_CURLY_BRACE .
+
+    $default  reduce using rule 51 (block)
+
+
+State 197
+
+   54 run_content: statement run_content .
+
+    $default  reduce using rule 54 (run_content)
+
+
+State 198
+
+   55 statement: assignment SEMI_COLON .
+
+    $default  reduce using rule 55 (statement)
+
+
+State 199
+
+   61 statement: goto SEMI_COLON .
+
+    $default  reduce using rule 61 (statement)
+
+
+State 200
+
+   56 statement: expr SEMI_COLON .
+
+    $default  reduce using rule 56 (statement)
+
+
+State 201
+
+   28 array_dcl: OPENING_BRACE CLOSING_BRACE array_dcl .
+
+    $default  reduce using rule 28 (array_dcl)
+
+
+State 202
+
+   24 argument: type ID array_dcl COMMA argument .
+
+    $default  reduce using rule 24 (argument)
+
+
+State 203
+
+   71 method_call: ID OPENING_PARENTHESIS parameters CLOSING_PARENTHESIS .
+
+    $default  reduce using rule 71 (method_call)
+
+
+State 204
+
+   75 parameters: variable COMMA . parameters
+
+    ID  shift, and go to state 39
+
+    parameters  go to state 214
+    variable    go to state 163
+
+
+State 205
+
+   65 statement: DESTRUCT array_dcl ID . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 215
+
+
+State 206
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS var_dcl . $@7 expr $@8 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+    $default  reduce using rule 83 ($@7)
+
+    $@7  go to state 216
+
+
+State 207
+
+   88 loop_stmt: FOR OPENING_PARENTHESIS $@9 . SEMI_COLON expr $@10 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+    SEMI_COLON  shift, and go to state 217
+
+
+State 208
+
+   92 loop_stmt: FOREACH OPENING_PARENTHESIS ID . IN ID CLOSING_PARENTHESIS block
+
+    IN  shift, and go to state 218
+
+
+State 209
+
+   76 cond_stmt: IF OPENING_PARENTHESIS expr . closing_paranthes block
+   78          | IF OPENING_PARENTHESIS expr . closing_paranthes block ELSE $@6 block
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+    CLOSING_PARENTHESIS        shift, and go to state 219
+
+    closing_paranthes  go to state 220
+
+
+State 210
+
+   91 loop_stmt: REPEAT $@11 block . UNTIL OPENING_PARENTHESIS expr $@12 CLOSING_PARENTHESIS SEMI_COLON
+
+    UNTIL  shift, and go to state 221
+
+
+State 211
+
+   60 statement: RETURN expr SEMI_COLON .
+
+    $default  reduce using rule 60 (statement)
+
+
+State 212
+
+   66 statement: SIZEOF OPENING_PARENTHESIS type . CLOSING_PARENTHESIS SEMI_COLON
+
+    CLOSING_PARENTHESIS  shift, and go to state 222
+
+
+State 213
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID . CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE cases DEFAULT COLON block CLOSING_CURLY_BRACE
+
+    CLOSING_PARENTHESIS  shift, and go to state 223
+
+
+State 214
+
+   75 parameters: variable COMMA parameters .
+
+    $default  reduce using rule 75 (parameters)
+
+
+State 215
+
+   65 statement: DESTRUCT array_dcl ID SEMI_COLON .
+
+    $default  reduce using rule 65 (statement)
+
+
+State 216
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS var_dcl $@7 . expr $@8 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 224
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 217
+
+   88 loop_stmt: FOR OPENING_PARENTHESIS $@9 SEMI_COLON . expr $@10 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 225
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 218
+
+   92 loop_stmt: FOREACH OPENING_PARENTHESIS ID IN . ID CLOSING_PARENTHESIS block
+
+    ID  shift, and go to state 226
+
+
+State 219
+
+   80 closing_paranthes: CLOSING_PARENTHESIS .
+
+    $default  reduce using rule 80 (closing_paranthes)
+
+
+State 220
+
+   76 cond_stmt: IF OPENING_PARENTHESIS expr closing_paranthes . block
+   78          | IF OPENING_PARENTHESIS expr closing_paranthes . block ELSE $@6 block
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+
+    block  go to state 227
+
+
+State 221
+
+   91 loop_stmt: REPEAT $@11 block UNTIL . OPENING_PARENTHESIS expr $@12 CLOSING_PARENTHESIS SEMI_COLON
+
+    OPENING_PARENTHESIS  shift, and go to state 228
+
+
+State 222
+
+   66 statement: SIZEOF OPENING_PARENTHESIS type CLOSING_PARENTHESIS . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 229
+
+
+State 223
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS . OF COLON OPENING_CURLY_BRACE cases DEFAULT COLON block CLOSING_CURLY_BRACE
+
+    OF  shift, and go to state 230
+
+
+State 224
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS var_dcl $@7 expr . $@8 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+
+    $default  reduce using rule 84 ($@8)
+
+    $@8  go to state 231
+
+
+State 225
+
+   88 loop_stmt: FOR OPENING_PARENTHESIS $@9 SEMI_COLON expr . $@10 SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+
+    $default  reduce using rule 87 ($@10)
+
+    $@10  go to state 232
+
+
+State 226
+
+   92 loop_stmt: FOREACH OPENING_PARENTHESIS ID IN ID . CLOSING_PARENTHESIS block
+
+    CLOSING_PARENTHESIS  shift, and go to state 233
+
+
+State 227
+
+   76 cond_stmt: IF OPENING_PARENTHESIS expr closing_paranthes block .
+   78          | IF OPENING_PARENTHESIS expr closing_paranthes block . ELSE $@6 block
+
+    ELSE  shift, and go to state 234
+
+    $default  reduce using rule 76 (cond_stmt)
+
+
+State 228
+
+   91 loop_stmt: REPEAT $@11 block UNTIL OPENING_PARENTHESIS . expr $@12 CLOSING_PARENTHESIS SEMI_COLON
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr         go to state 235
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 229
+
+   66 statement: SIZEOF OPENING_PARENTHESIS type CLOSING_PARENTHESIS SEMI_COLON .
+
+    $default  reduce using rule 66 (statement)
+
+
+State 230
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF . COLON OPENING_CURLY_BRACE cases DEFAULT COLON block CLOSING_CURLY_BRACE
+
+    COLON  shift, and go to state 236
+
+
+State 231
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS var_dcl $@7 expr $@8 . SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+    SEMI_COLON  shift, and go to state 237
+
+
+State 232
+
+   88 loop_stmt: FOR OPENING_PARENTHESIS $@9 SEMI_COLON expr $@10 . SEMI_COLON expr_assign CLOSING_PARENTHESIS block
+
+    SEMI_COLON  shift, and go to state 238
+
+
+State 233
+
+   92 loop_stmt: FOREACH OPENING_PARENTHESIS ID IN ID CLOSING_PARENTHESIS . block
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+
+    block  go to state 239
+
+
+State 234
+
+   78 cond_stmt: IF OPENING_PARENTHESIS expr closing_paranthes block ELSE . $@6 block
+
+    $default  reduce using rule 77 ($@6)
+
+    $@6  go to state 240
+
+
+State 235
+
+   91 loop_stmt: REPEAT $@11 block UNTIL OPENING_PARENTHESIS expr . $@12 CLOSING_PARENTHESIS SEMI_COLON
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+
+    $default  reduce using rule 90 ($@12)
+
+    $@12  go to state 241
+
+
+State 236
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF COLON . OPENING_CURLY_BRACE cases DEFAULT COLON block CLOSING_CURLY_BRACE
+
+    OPENING_CURLY_BRACE  shift, and go to state 242
+
+
+State 237
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS var_dcl $@7 expr $@8 SEMI_COLON . expr_assign CLOSING_PARENTHESIS block
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr_assign  go to state 243
+    expr         go to state 244
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 238
+
+   88 loop_stmt: FOR OPENING_PARENTHESIS $@9 SEMI_COLON expr $@10 SEMI_COLON . expr_assign CLOSING_PARENTHESIS block
+
+    NOT                  shift, and go to state 73
+    INCREMENT            shift, and go to state 74
+    DECREMENT            shift, and go to state 75
+    SUB_AND_UNARY_MINUS  shift, and go to state 76
+    OPENING_PARENTHESIS  shift, and go to state 77
+    BOOLEAN_CONST        shift, and go to state 78
+    INTEGER_CONST        shift, and go to state 79
+    LONG_CONST           shift, and go to state 80
+    REAL_CONST           shift, and go to state 81
+    CHARACTER_CONST      shift, and go to state 82
+    STRING_CONST         shift, and go to state 83
+    ID                   shift, and go to state 84
+
+    method_call  go to state 85
+    expr_assign  go to state 245
+    expr         go to state 244
+    unary_op     go to state 87
+    variable     go to state 88
+    const_val    go to state 89
+
+
+State 239
+
+   92 loop_stmt: FOREACH OPENING_PARENTHESIS ID IN ID CLOSING_PARENTHESIS block .
+
+    $default  reduce using rule 92 (loop_stmt)
+
+
+State 240
+
+   78 cond_stmt: IF OPENING_PARENTHESIS expr closing_paranthes block ELSE $@6 . block
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+
+    block  go to state 246
+
+
+State 241
+
+   91 loop_stmt: REPEAT $@11 block UNTIL OPENING_PARENTHESIS expr $@12 . CLOSING_PARENTHESIS SEMI_COLON
+
+    CLOSING_PARENTHESIS  shift, and go to state 247
+
+
+State 242
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE . cases DEFAULT COLON block CLOSING_CURLY_BRACE
+
+    CASE  shift, and go to state 248
+
+    $default  reduce using rule 81 (cases)
+
+    cases  go to state 249
+
+
+State 243
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS var_dcl $@7 expr $@8 SEMI_COLON expr_assign . CLOSING_PARENTHESIS block
+
+    CLOSING_PARENTHESIS  shift, and go to state 250
+
+
+State 244
+
+   93 expr_assign: expr .
+   96 expr: expr . ADD expr
+   97     | expr . SUB_AND_UNARY_MINUS expr
+   98     | expr . PRODUCTION expr
+   99     | expr . DIV expr
+  100     | expr . MOD expr
+  101     | expr . LOGICAL_AND expr
+  102     | expr . ARITHMATIC_AND expr
+  103     | expr . ARITHMATIC_OR expr
+  104     | expr . LOGICAL_OR expr
+  105     | expr . LOGICAL_OR_ARITHMATIC_XOR expr
+  106     | expr . EQUAL expr
+  107     | expr . NOT_EQUAL expr
+  108     | expr . BIGGER_OR_EQUAL expr
+  109     | expr . BIGGER_THAN expr
+  110     | expr . LESS_OR_EQUAL expr
+  111     | expr . LESS_THAN expr
+
+    EQUAL                      shift, and go to state 111
+    NOT_EQUAL                  shift, and go to state 112
+    LESS_OR_EQUAL              shift, and go to state 113
+    LESS_THAN                  shift, and go to state 114
+    BIGGER_THAN                shift, and go to state 115
+    BIGGER_OR_EQUAL            shift, and go to state 116
+    ARITHMATIC_AND             shift, and go to state 117
+    LOGICAL_AND                shift, and go to state 118
+    ARITHMATIC_OR              shift, and go to state 119
+    LOGICAL_OR                 shift, and go to state 120
+    LOGICAL_OR_ARITHMATIC_XOR  shift, and go to state 121
+    PRODUCTION                 shift, and go to state 122
+    ADD                        shift, and go to state 123
+    SUB_AND_UNARY_MINUS        shift, and go to state 124
+    DIV                        shift, and go to state 125
+    MOD                        shift, and go to state 126
+
+    $default  reduce using rule 93 (expr_assign)
+
+
+State 245
+
+   88 loop_stmt: FOR OPENING_PARENTHESIS $@9 SEMI_COLON expr $@10 SEMI_COLON expr_assign . CLOSING_PARENTHESIS block
+
+    CLOSING_PARENTHESIS  shift, and go to state 251
+
+
+State 246
+
+   78 cond_stmt: IF OPENING_PARENTHESIS expr closing_paranthes block ELSE $@6 block .
+
+    $default  reduce using rule 78 (cond_stmt)
+
+
+State 247
+
+   91 loop_stmt: REPEAT $@11 block UNTIL OPENING_PARENTHESIS expr $@12 CLOSING_PARENTHESIS . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 252
+
+
+State 248
+
+   82 cases: CASE . INTEGER_CONST COLON block cases
+
+    INTEGER_CONST  shift, and go to state 253
+
+
+State 249
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE cases . DEFAULT COLON block CLOSING_CURLY_BRACE
+
+    DEFAULT  shift, and go to state 254
+
+
+State 250
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS var_dcl $@7 expr $@8 SEMI_COLON expr_assign CLOSING_PARENTHESIS . block
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+
+    block  go to state 255
+
+
+State 251
+
+   88 loop_stmt: FOR OPENING_PARENTHESIS $@9 SEMI_COLON expr $@10 SEMI_COLON expr_assign CLOSING_PARENTHESIS . block
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+
+    block  go to state 256
+
+
+State 252
+
+   91 loop_stmt: REPEAT $@11 block UNTIL OPENING_PARENTHESIS expr $@12 CLOSING_PARENTHESIS SEMI_COLON .
+
+    $default  reduce using rule 91 (loop_stmt)
+
+
+State 253
+
+   82 cases: CASE INTEGER_CONST . COLON block cases
+
+    COLON  shift, and go to state 257
+
+
+State 254
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE cases DEFAULT . COLON block CLOSING_CURLY_BRACE
+
+    COLON  shift, and go to state 258
+
+
+State 255
+
+   85 loop_stmt: FOR OPENING_PARENTHESIS var_dcl $@7 expr $@8 SEMI_COLON expr_assign CLOSING_PARENTHESIS block .
+
+    $default  reduce using rule 85 (loop_stmt)
+
+
+State 256
+
+   88 loop_stmt: FOR OPENING_PARENTHESIS $@9 SEMI_COLON expr $@10 SEMI_COLON expr_assign CLOSING_PARENTHESIS block .
+
+    $default  reduce using rule 88 (loop_stmt)
+
+
+State 257
+
+   82 cases: CASE INTEGER_CONST COLON . block cases
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+
+    block  go to state 259
+
+
+State 258
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE cases DEFAULT COLON . block CLOSING_CURLY_BRACE
+
+    OPENING_CURLY_BRACE  shift, and go to state 99
+
+    block  go to state 260
+
+
+State 259
+
+   82 cases: CASE INTEGER_CONST COLON block . cases
+
+    CASE  shift, and go to state 248
+
+    $default  reduce using rule 81 (cases)
+
+    cases  go to state 261
+
+
+State 260
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE cases DEFAULT COLON block . CLOSING_CURLY_BRACE
+
+    CLOSING_CURLY_BRACE  shift, and go to state 262
+
+
+State 261
+
+   82 cases: CASE INTEGER_CONST COLON block cases .
+
+    $default  reduce using rule 82 (cases)
+
+
+State 262
+
+   79 cond_stmt: SWITCH OPENING_PARENTHESIS ID CLOSING_PARENTHESIS OF COLON OPENING_CURLY_BRACE cases DEFAULT COLON block CLOSING_CURLY_BRACE .
+
+    $default  reduce using rule 79 (cond_stmt)
